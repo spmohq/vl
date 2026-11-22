@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">AI ভিজ্যুয়াল ল্যাব প্রম্পট জেনারেটর (বিজ্ঞান, গণিত, ভূগোল, ইতিহাস ও ব্যাকরণ)</title>
+  <link rel="icon" href="spm.ico" type="image/x-icon" />
+  <style>
+    :root {
+      /* Couleurs aléatoires 185 Color Palette */
+      --forest-deep: #26483c;     /* rgb(38, 72, 60) */
+      --magenta-glow: #fa72dc;    /* rgb(250, 114, 220) */
+      --corp-blue: #3582be;       /* rgb(53, 130, 190) */
+      --lime-accent: #d2da7e;     /* rgb(210, 218, 126) */
+      --sage-teal: #5d8d7f;       /* rgb(93, 141, 127) */
+      --whatsapp: #25d366;
+
+      --bg-dark: #162b24;
+      --surface-glass: rgba(255, 255, 255, 0.96);
+      --text-main: #1b332b;
+      --text-muted: #4b695e;
+      --border-soft: rgba(93, 141, 127, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: radial-gradient(circle at 12% 18%, #26483c 0%, #193129 48%, #10201a 100%);
+      color: var(--text-main);
+      line-height: 1.65;
+      padding: 28px 16px 86px;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Subtle Ambient Glossy Orbs */
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(85px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    body::before {
+      width: 340px;
+      height: 340px;
+      background: rgba(53, 130, 190, 0.24);
+      top: -80px;
+      right: -60px;
+    }
+    body::after {
+      width: 300px;
+      height: 300px;
+      background: rgba(250, 114, 220, 0.16);
+      bottom: -80px;
+      left: -60px;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      background: var(--surface-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow:
+        0 24px 54px rgba(10, 22, 18, 0.45),
+        0 2px 10px rgba(38, 72, 60, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    /* Glossy Corporate Header */
+    header {
+      position: relative;
+      text-align: center;
+      background: linear-gradient(135deg, var(--forest-deep) 0%, #2d594a 52%, var(--corp-blue) 100%);
+      padding: 30px 24px 26px;
+      color: #ffffff;
+      border-bottom: 3px solid var(--lime-accent);
+      overflow: hidden;
+    }
+
+    /* Specular Gloss Sheen on Header */
+    header::before {
+      content: "";
+      position: absolute;
+      top: -55%;
+      left: -15%;
+      width: 130%;
+      height: 110%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.02) 100%);
+      transform: rotate(-4deg);
+      pointer-events: none;
+    }
+
+    header h1 {
+      position: relative;
+      font-size: 1.56rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      color: #ffffff;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      margin-bottom: 8px;
+    }
+
+    header p {
+      position: relative;
+      font-size: 0.94rem;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 620px;
+      margin: 0 auto 16px;
+    }
+
+    .help-link-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.1) 100%);
+      color: #ffffff;
+      border: 1px solid rgba(210, 218, 126, 0.7);
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 0.87rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      transition: all 0.25s ease;
+    }
+
+    .help-link-btn:hover {
+      background: var(--lime-accent);
+      color: var(--forest-deep);
+      border-color: var(--lime-accent);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(210, 218, 126, 0.35);
+    }
+
+    .main-body {
+      padding: 26px 24px 22px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .form-col {
+      flex: 1;
+      min-width: 210px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: var(--forest-deep);
+      margin-bottom: 7px;
+      font-size: 0.92rem;
+      letter-spacing: 0.1px;
+    }
+
+    input, select, .topic-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border-soft);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--text-main);
+      background: linear-gradient(180deg, #ffffff 0%, #f6faf8 100%);
+      box-shadow: inset 0 1px 2px rgba(38, 72, 60, 0.06), 0 1px 2px rgba(255, 255, 255, 0.8);
+      transition: all 0.22s ease;
+    }
+
+    .topic-textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+
+    input::placeholder,
+    .topic-textarea::placeholder {
+      color: #6b877d;
+    }
+
+    input:focus,
+    select:focus,
+    .topic-textarea:focus {
+      outline: none;
+      border-color: var(--corp-blue);
+      background: #ffffff;
+      box-shadow: 0 0 0 3.5px rgba(53, 130, 190, 0.18), 0 2px 8px rgba(38, 72, 60, 0.08);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.96rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.24s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Glossy Corporate Primary Button */
+    .btn-primary {
+      background: linear-gradient(180deg, #4293d1 0%, var(--corp-blue) 52%, #296b9e 100%);
+      color: #ffffff;
+      flex: 2;
+      border: 1px solid #266393;
+      box-shadow:
+        0 6px 16px rgba(53, 130, 190, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(180deg, #4da0df 0%, #3a8bc9 52%, #2c73ab 100%);
+      transform: translateY(-1px);
+      box-shadow:
+        0 8px 20px rgba(53, 130, 190, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    /* Glossy Subtle Corporate Reset Button */
+    .btn-reset {
+      background: linear-gradient(180deg, #f3f7f5 0%, #e1ece8 100%);
+      color: var(--forest-deep);
+      flex: 1;
+      border: 1px solid rgba(93, 141, 127, 0.45);
+      box-shadow: 0 2px 6px rgba(38, 72, 60, 0.08), inset 0 1px 0 #ffffff;
+    }
+
+    .btn-reset:hover {
+      background: linear-gradient(180deg, #e7f0ec 0%, #d4e3dd 100%);
+      border-color: var(--sage-teal);
+    }
+
+    .output-box {
+      margin-top: 26px;
+      padding-top: 22px;
+      border-top: 1.5px dashed rgba(93, 141, 127, 0.4);
+      display: none;
+      animation: fadeSlideIn 0.3s ease;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #promptOutput {
+      width: 100%;
+      height: 255px;
+      padding: 14px 16px;
+      border: 1.5px solid rgba(53, 130, 190, 0.4);
+      border-radius: 12px;
+      background: linear-gradient(180deg, #f4f9fc 0%, #edf5f2 100%);
+      font-family: inherit;
+      font-size: 0.93rem;
+      line-height: 1.65;
+      color: var(--forest-deep);
+      resize: vertical;
+      box-shadow: inset 0 2px 6px rgba(38, 72, 60, 0.07);
+    }
+
+    #promptOutput:focus {
+      outline: none;
+      border-color: var(--corp-blue);
+    }
+
+    .copy-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      gap: 10px;
+    }
+
+    /* Glossy Emerald-Teal Copy Button with Magenta-Lime Glow Hover */
+    .btn-copy {
+      background: linear-gradient(180deg, #699c8d 0%, var(--sage-teal) 50%, var(--forest-deep) 100%);
+      color: #ffffff;
+      width: 100%;
+      border: 1px solid var(--forest-deep);
+      box-shadow:
+        0 6px 16px rgba(38, 72, 60, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-copy:hover {
+      background: linear-gradient(180deg, #74a899 0%, #4e7d6f 50%, #1f3c32 100%);
+      transform: translateY(-1px);
+      box-shadow:
+        0 8px 20px rgba(38, 72, 60, 0.4),
+        0 0 0 2px rgba(210, 218, 126, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .guide-note {
+      margin-top: 18px;
+      padding: 13px 16px;
+      background: linear-gradient(135deg, rgba(210, 218, 126, 0.24) 0%, rgba(250, 114, 220, 0.08) 100%);
+      border: 1px solid rgba(210, 218, 126, 0.7);
+      border-left: 5px solid var(--magenta-glow);
+      font-size: 0.89rem;
+      color: var(--forest-deep);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(38, 72, 60, 0.05);
+    }
+
+    .guide-note strong {
+      color: var(--forest-deep);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 26px;
+      padding: 16px 20px;
+      background: linear-gradient(180deg, #f3f7f5 0%, #e8f0ec 100%);
+      border-top: 1px solid rgba(93, 141, 127, 0.28);
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* Floating WhatsApp Button (Bottom-Right) */
+    .floating-whatsapp {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 950;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(180deg, #28e06d 0%, var(--whatsapp) 55%, #1ebe5d 100%);
+      color: #052e16;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 0.96rem;
+      padding: 13px 20px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(255, 255, 255, 0.75);
+      box-shadow: 0 12px 28px rgba(7, 21, 43, 0.28), 0 0 0 4px rgba(37, 211, 102, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .floating-whatsapp:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 34px rgba(7, 21, 43, 0.34), 0 0 0 6px rgba(37, 211, 102, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .floating-whatsapp svg {
+      flex-shrink: 0;
+    }
+
+    /* Popup Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(16, 32, 26, 0.75);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      max-width: 640px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      border-radius: 16px;
+      border: 1px solid rgba(93, 141, 127, 0.4);
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, var(--forest-deep) 0%, var(--corp-blue) 100%);
+      color: #ffffff;
+      padding: 16px 20px;
+      border-bottom: 3px solid var(--lime-accent);
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .modal-header h2 {
+      font-size: 1.15rem;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .close-x {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      font-size: 1.4rem;
+      line-height: 1;
+      color: #ffffff;
+      cursor: pointer;
+      padding: 4px 10px;
+      transition: all 0.2s;
+    }
+
+    .close-x:hover {
+      background: var(--magenta-glow);
+      color: var(--forest-deep);
+      border-color: var(--magenta-glow);
+    }
+
+    .modal-inner {
+      padding: 18px 22px 22px;
+    }
+
+    .lang-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      background: #ebf2ef;
+      padding: 5px;
+      border-radius: 10px;
+      border: 1px solid rgba(93, 141, 127, 0.25);
+    }
+
+    .lang-tab {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 7px;
+      font-size: 0.89rem;
+      font-weight: 600;
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      cursor: pointer;
+    }
+
+    .lang-tab.active {
+      background: linear-gradient(180deg, #ffffff 0%, #f4f9f7 100%);
+      color: var(--forest-deep);
+      box-shadow: 0 2px 6px rgba(38, 72, 60, 0.14);
+      border: 1px solid rgba(93, 141, 127, 0.3);
+    }
+
+    .modal-body h3 {
+      font-size: 1.02rem;
+      color: var(--corp-blue);
+      margin: 16px 0 7px;
+      padding-bottom: 3px;
+      border-bottom: 1px solid rgba(53, 130, 190, 0.2);
+    }
+
+    .modal-body p,
+    .modal-body li {
+      font-size: 0.92rem;
+      color: var(--text-main);
+      margin-bottom: 7px;
+    }
+
+    .modal-body ol,
+    .modal-body ul {
+      padding-left: 20px;
+      margin-bottom: 12px;
+    }
+
+    .modal-body code {
+      background: #eef5f2;
+      color: var(--forest-deep);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.86rem;
+      border: 1px solid rgba(93, 141, 127, 0.25);
+    }
+
+    .modal-tip {
+      background: linear-gradient(135deg, rgba(210, 218, 126, 0.26) 0%, rgba(93, 141, 127, 0.12) 100%);
+      border: 1px solid rgba(93, 141, 127, 0.35);
+      border-left: 4px solid var(--sage-teal);
+      padding: 12px 14px;
+      font-size: 0.89rem;
+      margin-top: 14px;
+      border-radius: 8px;
+      color: var(--forest-deep);
+    }
+
+    .btn-close-modal {
+      background: linear-gradient(180deg, #4293d1 0%, var(--corp-blue) 52%, #296b9e 100%);
+      color: #ffffff;
+      width: 100%;
+      margin-top: 18px;
+      box-shadow: 0 4px 12px rgba(53, 130, 190, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-close-modal:hover {
+      background: linear-gradient(180deg, #4da0df 0%, #3a8bc9 52%, #2c73ab 100%);
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 14px 10px 78px; }
+      header { padding: 24px 16px 20px; }
+      header h1 { font-size: 1.32rem; }
+      .main-body { padding: 20px 16px 18px; }
+      .btn-primary, .btn-reset { flex: 1 1 100%; }
+      .floating-whatsapp {
+        right: 16px;
+        bottom: 16px;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 id="mainHeading">AI ভিজ্যুয়াল ল্যাব প্রম্পট জেনারেটর</h1>
+      <p id="subHeading">বিজ্ঞান, গণিত, ভূগোল, ইতিহাস ও ব্যাকরণের কঠিন অধ্যায়গুলো চোখের সামনে সচল ডেমোতে দেখার সহজ টুল</p>
+      <a href="javascript:void(0)" class="help-link-btn" id="helpBtnText" onclick="openHelpModal()">❓ কীভাবে ব্যবহার করবে? (সহজ হেল্প গাইড)</a>
+    </header>
+
+    <div class="main-body">
+      <div class="form-row">
+        <div class="form-group form-col">
+          <label for="mediumSelect" id="lblMedium">১. মাধ্যম (Medium):</label>
+          <select id="mediumSelect" onchange="updateUI()">
+            <option value="bn" selected>বাংলা মাধ্যম (Bengali Medium)</option>
+            <option value="en">ইংরেজি মাধ্যম (English Medium)</option>
+          </select>
+        </div>
+
+        <div class="form-group form-col">
+          <label for="subjectSelect" id="lblSubject">২. বিষয় (Subject):</label>
+          <select id="subjectSelect" onchange="updateUI()">
+            <option value="life" id="optLife" selected>জীবনবিজ্ঞান (Life Science)</option>
+            <option value="phy" id="optPhy">ভৌতবিজ্ঞান (Physical Science)</option>
+            <option value="math" id="optMath">গণিত (Mathematics)</option>
+            <option value="geo" id="optGeo">ভূগোল (Geography)</option>
+            <option value="hist" id="optHist">ইতিহাস (History)</option>
+            <option value="gram" id="optGram">ইংরেজি ও বাংলা ব্যাকরণ (Grammar)</option>
+          </select>
+        </div>
+
+        <div class="form-group form-col">
+          <label for="classLevel" id="lblClass">৩. শ্রেণি (Class Level):</label>
+          <select id="classLevel">
+            <option value="5-6" id="opt56">ক্লাস ৫–৬ (প্রাথমিক স্তর)</option>
+            <option value="7-8" id="opt78" selected>ক্লাস ৭–৮ (মাধ্যমিক প্রাথমিক)</option>
+            <option value="9-10" id="opt910">ক্লাস ৯–১০ (মাধ্যমিক স্তর)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="topicInput" id="lblTopic">৪. কোন বিষয়টি অ্যানিমেশন বা ডেমোতে দেখতে চান?</label>
+        <textarea id="topicInput" class="topic-textarea" rows="3" placeholder="যেমন: হৃৎপিণ্ডে রক্ত চলাচল, পরিপাকতন্ত্র, বা ফুসফুসের শ্বাস-প্রশ্বাস"></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btnGenerate" onclick="generatePrompt()">প্রম্পট তৈরি করুন</button>
+        <button class="btn-reset" id="btnReset" onclick="resetForm()">রিসেট করুন</button>
+      </div>
+
+      <div class="output-box" id="outputSection">
+        <label for="promptOutput" id="lblOutput">নিচের নির্দেশটি কপি করে Google Gemini-তে পেস্ট করুন:</label>
+        <textarea id="promptOutput" readonly></textarea>
+        <div class="copy-bar">
+          <button class="btn-copy" id="copyBtn" onclick="copyPrompt()">প্রম্পট কপি করুন (Copy)</button>
+        </div>
+        <div class="guide-note" id="guideNote">
+          <strong>মনে রাখবেন:</strong> ডেমোটি তৈরি হওয়ার পর অবশ্যই পাঠ্যবইয়ের ছবি, সূত্র, সাল-তারিখ বা ব্যাকরণের নিয়মের সাথে মিলিয়ে দেখবে। কোনো তথ্য বা উদাহরণ ভুল মনে হলে Gemini-কে লিখবে: <em>"বইয়ের নিয়ম অনুযায়ী [অংশের নাম]-এর তথ্য বা উদাহরণ ঠিক করে দাও।"</em>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.
+    </footer>
+  </div>
+
+  <!-- FLOATING WHATSAPP BUTTON -->
+  <a href="https://wa.me/919339126139?text=%E0%A6%A8%E0%A6%AE%E0%A6%B8%E0%A7%8D%E0%A6%95%E0%A6%BE%E0%A6%B0!%20AI%20%E0%A6%AD%E0%A6%BF%E0%A6%9C%E0%A7%8D%E0%A6%AF%E0%A7%81%E0%A6%AF%E0%A6%BC%E0%A6%BE%E0%A6%B2%20%E0%A6%B2%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%AC%20%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%AE%E0%A7%8D%E0%A6%AA%E0%A6%9F%20%E0%A6%9C%E0%A7%87%E0%A6%A8%E0%A6%BE%E0%A6%B0%E0%A7%87%E0%A6%9F%E0%A6%B0%20%E0%A6%AC%E0%A7%8D%E0%A6%AF%E0%A6%AC%E0%A6%B9%E0%A6%BE%E0%A6%B0%20%E0%A6%95%E0%A6%B0%E0%A6%BE%E0%A6%B0%20%E0%A6%AC%E0%A6%BF%E0%A6%B7%E0%A6%AF%E0%A6%BC%E0%A7%87%20%E0%A6%86%E0%A6%AE%E0%A6%BE%E0%A6%B0%20%E0%A6%8F%E0%A6%95%E0%A6%9F%E0%A7%81%20%E0%A6%B8%E0%A6%BE%E0%A6%B9%E0%A6%BE%E0%A6%AF%E0%A7%8D%E0%A6%AF%20%E0%A6%A6%E0%A6%B0%E0%A6%95%E0%A6%BE%E0%A6%B0%E0%A5%A4" target="_blank" rel="noopener noreferrer" class="floating-whatsapp" id="floatingWhatsappBtn" aria-label="সাহায্যের জন্য WhatsApp-এ সরাসরি মেসেজ করুন">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12.031 2c-5.516 0-9.969 4.453-9.969 9.969 0 1.758.459 3.473 1.331 4.986L2 22l5.182-1.359a9.927 9.927 0 0 0 4.849 1.258h.004c5.515 0 9.968-4.453 9.968-9.969A9.91 9.91 0 0 0 19.08 4.92 9.908 9.908 0 0 0 12.031 2zm5.822 14.274c-.246.692-1.431 1.324-1.979 1.406-.508.076-1.15.108-1.856-.116-.428-.136-.978-.318-1.682-.622-2.961-1.278-4.894-4.26-5.042-4.458-.147-.197-1.203-1.601-1.203-3.054 0-1.453.762-2.167 1.032-2.463.271-.296.591-.37.788-.37.197 0 .394.002.566.01.182.009.426-.069.666.508.246.591.837 2.044.911 2.192.074.148.123.32.025.517-.099.197-.148.32-.296.493-.148.172-.311.385-.444.517-.148.148-.302.308-.13.604.172.296.766 1.264 1.644 2.047 1.13 1.007 2.082 1.319 2.378 1.467.296.148.468.123.64-.074.172-.197.739-.862.936-1.158.197-.296.394-.246.665-.148.271.099 1.724.813 2.02.961.296.148.493.222.566.345.074.123.074.714-.172 1.406z"/>
+    </svg>
+    <span id="whatsappBtnText">সাহায্য দরকার? WhatsApp করুন</span>
+  </a>
+
+  <!-- Bilingual Help Guide Popup Modal -->
+  <div class="modal-overlay" id="helpModal" onclick="outsideModalClick(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="modalTitle">সহজ ব্যবহার নির্দেশিকা (Help Guide)</h2>
+        <button class="close-x" onclick="closeHelpModal()" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="modal-inner">
+        <div class="lang-tabs">
+          <button class="lang-tab active" id="tabBn" onclick="switchHelpLang('bn')">বাংলা নির্দেশিকা</button>
+          <button class="lang-tab" id="tabEn" onclick="switchHelpLang('en')">English Guide</button>
+        </div>
+
+        <!-- Bengali Help Content -->
+        <div class="modal-body" id="helpContentBn">
+          <p>কোনো কোডিং বা ভিডিও এডিটিং না জেনেই তুমি নিজেই জীবনবিজ্ঞান, ভৌতবিজ্ঞান, গণিত, ভূগোল, ইতিহাস ও ব্যাকরণের কঠিন অধ্যায়গুলোকে চলমান সিমুলেশন বা ভিজ্যুয়াল চার্টে বদলে ফেলতে পারো। নিচের সহজ ধাপগুলো অনুসরণ করো:</p>
+
+          <h3>ধাপ ১: প্রম্পট (নির্দেশ) তৈরি করো</h3>
+          <ol>
+            <li>মূল পাতা থেকে তোমার <strong>মাধ্যম (বাংলা বা ইংরেজি)</strong>, <strong>বিষয়</strong> ও <strong>শ্রেণি</strong> বেছে নাও।</li>
+            <li>বক্সে যে বিষয়টি বুঝতে চাও তার নাম বা সংক্ষিপ্ত বিবরণ লেখো (যেমন: <em>হৃৎপিণ্ডে রক্ত চলাচল</em>, <em>পিথাগোরাসের উপপাদ্য</em>, <em>Tense-এর পরিবর্তন</em> বা <em>কারক ও বিভক্তি</em>)।</li>
+            <li><strong>'প্রম্পট তৈরি করুন'</strong> বাটনে চাপো এবং নিচে তৈরি হওয়া লেখাটি <strong>'প্রম্পট কপি করুন'</strong> বাটনে টিপে কপি করে নাও।</li>
+          </ol>
+
+          <h3>ধাপ ২: Google Gemini-তে লাইভ ডেমো চালাও</h3>
+          <ol>
+            <li>মোবাইল বা কম্পিউটারের ব্রাউজারে <strong>gemini.google.com</strong> খোলো (১৩ বছরের কম বয়স হলে বাবা-মা বা শিক্ষকের সাহায্য নাও)।</li>
+            <li>কপি করা লেখাটি চ্যাট বক্সে পেস্ট করে পাঠিয়ে দাও।</li>
+            <li>কয়েক সেকেন্ডের মধ্যেই Gemini তোমার জন্য একটি ইন্টারঅ্যাক্টিভ ল্যাব বা ভিজ্যুয়াল চার্ট তৈরি করে দেবে! বাটন বা স্লাইডার সরিয়ে পরিবর্তনগুলো নিজের চোখে দেখে নাও।</li>
+          </ol>
+
+          <h3>ধাপ ৩: ইন্টারনেট ছাড়াই দেখার জন্য সেভ করে রাখো (কম্পিউটার ও মোবাইল)</h3>
+          <ul>
+            <li>প্রথমে Gemini-র তৈরি কোড বক্সের ওপরে থাকা <strong>Copy code</strong> বাটনে ক্লিক করে কোডটি কপি করো।</li>
+            <li><strong>কম্পিউটার বা ল্যাপটপ হলে:</strong> <em>Notepad</em> খুলে কোডটি পেস্ট করো এবং <code>File &gt; Save As</code>-এ গিয়ে ফাইলটির নাম দাও <strong>demo.html</strong>। ফাইলটিতে ডাবল ক্লিক করলেই অফলাইনে চলবে।</li>
+            <li><strong>মোবাইল ফোন হলে:</strong> প্লে-স্টোর থেকে ফ্রি <em>QuickEdit</em> বা <em>Acode</em> অ্যাপ ইনস্টল করো। অ্যাপটি খুলে কোডটি পেস্ট করো এবং <strong>demo.html</strong> নামে ফোনের মেমোরিতে সেভ করো (শেষে <code>.html</code> লেখা জরুরি)। এরপর ফাইল ম্যানেজারে গিয়ে ফাইলটিতে ট্যাপ করে <strong>Chrome</strong> ব্রাউজার দিয়ে খুললেই <strong>ইন্টারনেট ছাড়াই</strong> পরীক্ষার আগে রিভিশন দিতে পারবে!</li>
+          </ul>
+
+          <div class="modal-tip">
+            <strong>সবচেয়ে জরুরি কথা (সতর্কতা):</strong> AI-এর বানানো ডেমোটি সবসময় তোমার পাঠ্যবইয়ের ছবি, সূত্র, সাল-তারিখ বা ব্যাকরণের নিয়মের সাথে মিলিয়ে নেবে। যদি দেখো কোনো তথ্য, হিসাব বা উদাহরণ ভুল হচ্ছে, তবে Gemini-কে বলো—<em>"বইয়ের নিয়ম অনুযায়ী এটি ঠিক করে দাও।"</em> আর কখনোই AI চ্যাটে নিজের নাম, স্কুল বা ঠিকানা লিখবে না।
+          </div>
+        </div>
+
+        <!-- English Help Content -->
+        <div class="modal-body" id="helpContentEn" style="display: none;">
+          <p>Without knowing any coding or animation software, you can turn complex Life Science, Physical Science, Mathematics, Geography, History, and Grammar topics into live, interactive simulations and visual charts. Just follow these simple steps:</p>
+
+          <h3>Step 1: Generate Your Prompt</h3>
+          <ol>
+            <li>Select your <strong>Medium (Bengali or English)</strong>, <strong>Subject</strong>, and <strong>Class Level</strong>.</li>
+            <li>Type the topic or a brief description of what you want to visualize (e.g., <em>Blood Circulation in Heart</em>, <em>Pythagoras Theorem</em>, <em>Tense Conversion</em>, or <em>Active &amp; Passive Voice</em>).</li>
+            <li>Click <strong>'Generate Prompt'</strong> and copy the generated text using the <strong>Copy Prompt</strong> button.</li>
+          </ol>
+
+          <h3>Step 2: Run the Live Simulation in Google Gemini</h3>
+          <ol>
+            <li>Open <strong>gemini.google.com</strong> in your mobile or computer browser (if you are under 13, use it with a parent or teacher).</li>
+            <li>Paste the copied prompt into the chat box and send it.</li>
+            <li>Within seconds, Gemini will build an interactive visual demo! Use the buttons or sliders inside the demo to observe how the rules, formulas, or processes work step-by-step.</li>
+          </ol>
+
+          <h3>Step 3: Save for Offline Revision (Computer &amp; Mobile)</h3>
+          <ul>
+            <li>First, click <strong>Copy code</strong> at the top of the code block generated by Gemini.</li>
+            <li><strong>On a Computer or Laptop:</strong> Open <em>Notepad</em>, paste the code, and save the file as <strong>demo.html</strong>. Double-click the saved file anytime to run it offline.</li>
+            <li><strong>On a Smartphone:</strong> Install a free text editor app like <em>QuickEdit</em> or <em>Acode</em> from the Play Store. Paste the code and save it as <strong>demo.html</strong> (the <code>.html</code> extension is required). Open your phone's File Manager, tap on <strong>demo.html</strong>, and open it with <strong>Chrome</strong> to revise anytime <strong>without an internet connection</strong>!</li>
+          </ul>
+
+          <div class="modal-tip">
+            <strong>Important Safety &amp; Accuracy Tip:</strong> Always verify the AI-generated demo against your school textbook diagrams, formulas, dates, and grammar rules. If any rule, calculation, or example looks incorrect, tell Gemini: <em>"Please fix this according to my textbook."</em> Never share your real name, school name, or personal details in AI chats.
+          </div>
+        </div>
+
+        <button class="btn-close-modal" id="modalCloseBtn" onclick="closeHelpModal()">বুঝেছি, বন্ধ করুন</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const placeholders = {
+      bn: {
+        life: [
+          "যেমন: হৃৎপিণ্ডে রক্ত চলাচল (Blood Circulation in Heart)",
+          "যেমন: মানুষের পরিপাকতন্ত্রে খাদ্য হজম প্রক্রিয়া",
+          "যেমন: ফুসফুসে শ্বাস-প্রশ্বাস ও মধ্যচ্ছদার কাজ",
+          "যেমন: বৃক্ক বা নেফ্রনের ছাঁকনি প্রক্রিয়া",
+          "যেমন: উদ্ভিদের সালোকসংশ্লেষ প্রক্রিয়া"
+        ],
+        phy: [
+          "যেমন: আলোর প্রতিসরণ ও আপতন কোণের পরিবর্তন",
+          "যেমন: সরল তড়িৎ বর্তনী (Simple Electric Circuit)",
+          "যেমন: কঠিনে তাপের পরিবহন ও অণুর কম্পন",
+          "যেমন: পেন্ডুলামের দোলন ও গতিশক্তি-স্থিতিশক্তি",
+          "যেমন: অম্ল ও ক্ষারের প্রশমন বিক্রিয়া"
+        ],
+        math: [
+          "যেমন: পিথাগোরাসের উপপাদ্যের ভিজ্যুয়াল প্রমাণ",
+          "যেমন: বৃত্তের ব্যাসার্ধ বদলালে পরিধি ও ক্ষেত্রফলের পরিবর্তন",
+          "যেমন: ত্রিভুজের তিনটি কোণের সমষ্টি ১৮০ ডিগ্রি",
+          "যেমন: লম্ব বৃত্তাকার চোঙ ও শঙ্কুর আয়তনের তুলনা",
+          "যেমন: ভগ্নাংশ ও শতকরার ভিজ্যুয়াল ধারণা"
+        ],
+        geo: [
+          "যেমন: জলচক্র (Water Cycle - বাষ্পীভবন ও বৃষ্টিপাত)",
+          "যেমন: জোয়ার-ভাটা ও চাঁদ-সূর্যের আকর্ষণ",
+          "যেমন: আগ্নেয়গিরির অগ্ন্যুৎপাত ও ভূ-অভ্যন্তরের স্তর",
+          "যেমন: পৃথিবীর বার্ষিক গতি ও ঋতু পরিবর্তন",
+          "যেমন: সমুদ্রবায়ু ও স্থলবায়ু প্রবাহের দিক"
+        ],
+        hist: [
+          "যেমন: পলাশীর যুদ্ধের কারণ, গতিপথ ও ফলাফল (১৭৫৭)",
+          "যেমন: ১৮৫৭ সালের মহাবিদ্রোহের কেন্দ্র ও বিস্তার",
+          "যেমন: অসহযোগ আন্দোলন ও ডান্ডি অভিযানের টাইমলাইন",
+          "যেমন: সিন্ধু বা হরপ্পা সভ্যতার নগর পরিকল্পনা",
+          "যেমন: সম্রাট অশোকের সাম্রাজ্য বিস্তার ও ধম্ম নীতি"
+        ],
+        gram: [
+          "যেমন: English Tense-এর কাল ও ক্রিয়ার রূপ পরিবর্তন",
+          "যেমন: Active থেকে Passive Voice পরিবর্তনের নিয়ম",
+          "যেমন: বাংলা কারক ও বিভক্তি (কর্তৃ, কর্ম, করণ কারক)",
+          "যেমন: সমাস ও ব্যাসবাক্য গঠনের ভিজ্যুয়াল চার্ট",
+          "যেমন: Narration Change (Direct থেকে Indirect Speech)"
+        ]
+      },
+      en: {
+        life: [
+          "e.g., Blood Circulation in Human Heart",
+          "e.g., Digestion Process in Human Alimentary Canal",
+          "e.g., Mechanism of Breathing and Diaphragm Movement",
+          "e.g., Filtration Process in Nephron (Kidney)",
+          "e.g., Photosynthesis Process in Plants"
+        ],
+        phy: [
+          "e.g., Refraction of Light through Glass Slab",
+          "e.g., Simple Electric Circuit with Switch & Bulb",
+          "e.g., Heat Conduction and Molecular Vibration",
+          "e.g., Simple Pendulum & Energy Transformation",
+          "e.g., States of Matter (Solid, Liquid, Gas)"
+        ],
+        math: [
+          "e.g., Visual Proof of Pythagoras Theorem",
+          "e.g., Circle Radius, Circumference & Area Explorer",
+          "e.g., Sum of Angles in a Triangle Equals 180 Degrees",
+          "e.g., Volume Comparison of Cylinder and Cone",
+          "e.g., Visual Understanding of Fractions & Percentages"
+        ],
+        geo: [
+          "e.g., Water Cycle (Evaporation & Precipitation)",
+          "e.g., High Tide and Low Tide Mechanism",
+          "e.g., Volcanic Eruption and Earth's Layers",
+          "e.g., Revolution of Earth and Change of Seasons",
+          "e.g., Sea Breeze and Land Breeze Circulation"
+        ],
+        hist: [
+          "e.g., Battle of Plassey (1757) Timeline & Key Events",
+          "e.g., Revolt of 1857 Centers & Progression Map",
+          "e.g., Non-Cooperation Movement & Dandi March Timeline",
+          "e.g., Indus Valley Civilization Town Planning",
+          "e.g., French Revolution Key Stages (1789)"
+        ],
+        gram: [
+          "e.g., English Tenses Timeline & Verb Form Changer",
+          "e.g., Active to Passive Voice Visual Transformer",
+          "e.g., Direct to Indirect Speech (Narration Rules)",
+          "e.g., Prepositions of Place and Movement Visual Guide",
+          "e.g., Clauses and Sentence Structure Builder"
+        ]
+      }
+    };
+
+    let pIndex = 0;
+
+    function openHelpModal() {
+      const currentMedium = document.getElementById("mediumSelect").value;
+      switchHelpLang(currentMedium);
+      document.getElementById("helpModal").style.display = "flex";
+    }
+
+    function closeHelpModal() {
+      document.getElementById("helpModal").style.display = "none";
+    }
+
+    function outsideModalClick(event) {
+      if (event.target.id === "helpModal") {
+        closeHelpModal();
+      }
+    }
+
+    function switchHelpLang(lang) {
+      const contentBn = document.getElementById("helpContentBn");
+      const contentEn = document.getElementById("helpContentEn");
+      const tabBn = document.getElementById("tabBn");
+      const tabEn = document.getElementById("tabEn");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalCloseBtn = document.getElementById("modalCloseBtn");
+
+      if (lang === "bn") {
+        contentBn.style.display = "block";
+        contentEn.style.display = "none";
+        tabBn.classList.add("active");
+        tabEn.classList.remove("active");
+        modalTitle.innerText = "সহজ ব্যবহার নির্দেশিকা (Help Guide)";
+        modalCloseBtn.innerText = "বুঝেছি, বন্ধ করুন";
+      } else {
+        contentBn.style.display = "none";
+        contentEn.style.display = "block";
+        tabEn.classList.add("active");
+        tabBn.classList.remove("active");
+        modalTitle.innerText = "Student & Parent Help Guide";
+        modalCloseBtn.innerText = "Got it, Close";
+      }
+    }
+
+    function updateUI() {
+      const medium = document.getElementById("mediumSelect").value;
+      const subject = document.getElementById("subjectSelect").value;
+      const input = document.getElementById("topicInput");
+      const waBtn = document.getElementById("floatingWhatsappBtn");
+      const waBtnText = document.getElementById("whatsappBtnText");
+
+      if (medium === "bn") {
+        document.documentElement.lang = "bn";
+        document.getElementById("pageTitle").innerText = "AI ভিজ্যুয়াল ল্যাব প্রম্পট জেনারেটর";
+        document.getElementById("mainHeading").innerText = "AI ভিজ্যুয়াল ল্যাব প্রম্পট জেনারেটর";
+        document.getElementById("subHeading").innerText = "বিজ্ঞান, গণিত, ভূগোল, ইতিহাস ও ব্যাকরণের কঠিন অধ্যায়গুলো চোখের সামনে সচল ডেমোতে দেখার সহজ টুল";
+        document.getElementById("helpBtnText").innerText = "❓ কীভাবে ব্যবহার করবে? (সহজ হেল্প গাইড)";
+        document.getElementById("lblMedium").innerText = "১. মাধ্যম (Medium):";
+        document.getElementById("lblSubject").innerText = "২. বিষয় (Subject):";
+        document.getElementById("optLife").innerText = "জীবনবিজ্ঞান (Life Science)";
+        document.getElementById("optPhy").innerText = "ভৌতবিজ্ঞান (Physical Science)";
+        document.getElementById("optMath").innerText = "গণিত (Mathematics)";
+        document.getElementById("optGeo").innerText = "ভূগোল (Geography)";
+        document.getElementById("optHist").innerText = "ইতিহাস (History)";
+        document.getElementById("optGram").innerText = "ইংরেজি ও বাংলা ব্যাকরণ (Grammar)";
+        document.getElementById("lblClass").innerText = "৩. শ্রেণি (Class Level):";
+        document.getElementById("opt56").innerText = "ক্লাস ৫–৬ (প্রাথমিক স্তর)";
+        document.getElementById("opt78").innerText = "ক্লাস ৭–৮ (মাধ্যমিক প্রাথমিক)";
+        document.getElementById("opt910").innerText = "ক্লাস ৯–১০ (মাধ্যমিক স্তর)";
+        document.getElementById("lblTopic").innerText = "৪. কোন বিষয়টি অ্যানিমেশন বা ডেমোতে দেখতে চান?";
+        document.getElementById("btnGenerate").innerText = "প্রম্পট তৈরি করুন";
+        document.getElementById("btnReset").innerText = "রিসেট করুন";
+        document.getElementById("lblOutput").innerText = "নিচের নির্দেশটি কপি করে Google Gemini-তে পেস্ট করুন:";
+        document.getElementById("copyBtn").innerText = "প্রম্পট কপি করুন (Copy)";
+        waBtnText.innerText = "সাহায্য দরকার? WhatsApp করুন";
+        waBtn.setAttribute("aria-label", "সাহায্যের জন্য WhatsApp-এ সরাসরি মেসেজ করুন");
+        waBtn.href = "https://wa.me/919339126139?text=" + encodeURIComponent("নমস্কার! AI ভিজ্যুয়াল ল্যাব প্রম্পট জেনারেটর ব্যবহার করার বিষয়ে আমার একটু সাহায্য দরকার।");
+      } else {
+        document.documentElement.lang = "en";
+        document.getElementById("pageTitle").innerText = "AI Visual Lab Prompt Generator";
+        document.getElementById("mainHeading").innerText = "AI Visual Lab Prompt Generator";
+        document.getElementById("subHeading").innerText = "A simple tool to visualize Science, Math, Geography, History, and Grammar topics as live demos";
+        document.getElementById("helpBtnText").innerText = "❓ How to Use? (Quick Help Guide)";
+        document.getElementById("lblMedium").innerText = "1. Medium of Study:";
+        document.getElementById("lblSubject").innerText = "2. Subject:";
+        document.getElementById("optLife").innerText = "Life Science";
+        document.getElementById("optPhy").innerText = "Physical Science";
+        document.getElementById("optMath").innerText = "Mathematics";
+        document.getElementById("optGeo").innerText = "Geography";
+        document.getElementById("optHist").innerText = "History";
+        document.getElementById("optGram").innerText = "English & Bengali Grammar";
+        document.getElementById("lblClass").innerText = "3. Class Level:";
+        document.getElementById("opt56").innerText = "Class 5–6 (Upper Primary)";
+        document.getElementById("opt78").innerText = "Class 7–8 (Middle School)";
+        document.getElementById("opt910").innerText = "Class 9–10 (Secondary)";
+        document.getElementById("lblTopic").innerText = "4. Which topic do you want to see in the visual demo?";
+        document.getElementById("btnGenerate").innerText = "Generate Prompt";
+        document.getElementById("btnReset").innerText = "Reset";
+        document.getElementById("lblOutput").innerText = "Copy the prompt below and paste it into Google Gemini:";
+        document.getElementById("copyBtn").innerText = "Copy Prompt";
+        waBtnText.innerText = "Need Help? WhatsApp Us";
+        waBtn.setAttribute("aria-label", "Message us on WhatsApp for help");
+        waBtn.href = "https://wa.me/919339126139?text=" + encodeURIComponent("Hello! I need some help using the AI Visual Lab Prompt Generator.");
+      }
+
+      pIndex = 0;
+      if (!input.value) {
+        input.placeholder = placeholders[medium][subject][0];
+      }
+      if (document.getElementById("outputSection").style.display === "block" && input.value.trim()) {
+        generatePrompt();
+      }
+    }
+
+    setInterval(() => {
+      const input = document.getElementById("topicInput");
+      const medium = document.getElementById("mediumSelect").value;
+      const subject = document.getElementById("subjectSelect").value;
+      const list = placeholders[medium][subject];
+      if (input && document.activeElement !== input && !input.value) {
+        pIndex = (pIndex + 1) % list.length;
+        input.placeholder = list[pIndex];
+      }
+    }, 3000);
+
+    function generatePrompt() {
+      const medium = document.getElementById("mediumSelect").value;
+      const subject = document.getElementById("subjectSelect").value;
+      const level = document.getElementById("classLevel").value;
+      const topic = document.getElementById("topicInput").value.trim();
+      const guideNote = document.getElementById("guideNote");
+
+      if (!topic) {
+        alert(medium === "bn" ? "অনুগ্রহ করে প্রথমে একটি বিষয়ের নাম লিখুন!" : "Please enter a topic name first!");
+        return;
+      }
+
+      let finalPrompt = "";
+
+      if (medium === "bn") {
+        const subNamesBn = {
+          life: "জীবনবিজ্ঞান (Life Science)",
+          phy: "ভৌতবিজ্ঞান (Physical Science)",
+          math: "গণিত (Mathematics)",
+          geo: "ভূগোল (Geography)",
+          hist: "ইতিহাস (History)",
+          gram: "ব্যাকরণ (Grammar)"
+        };
+        const levelDescBn = {
+          "5-6": "ক্লাস ৫–৬ (প্রাথমিক স্তর - একদম সহজ চিত্র ও মৌলিক ধারণা)",
+          "7-8": "ক্লাস ৭–৮ (মাধ্যমিক প্রাথমিক স্তর - মূল প্রক্রিয়া, সূত্র ও নিয়মাবলী)",
+          "9-10": "ক্লাস ৯–১০ (মাধ্যমিক স্তর - WBBSE সিলেবাস অনুযায়ী ধাপে ধাপে বিশ্লেষণ)"
+        }[level];
+
+        const specificFeatureBn = {
+          life: "১. মূল অঙ্গ বা অংশগুলির পরিষ্কার ও নির্ভুল বাংলা লেবেল (পাশে ইংরেজি টার্ম ব্র্যাকেটে থাকবে)।\n২. প্রক্রিয়াটি ধাপে ধাপে বা চালু/বন্ধ করে দেখার জন্য নিচে সহজ বাংলা বাটন (যেমন: 'শুরু করুন', 'পরবর্তী ধাপ', 'রিসেট') থাকবে।\n৩. রঙিন কণা, তীরচিহ্ন বা সহজ অ্যানিমেশনের মাধ্যমে ভেতরের গতি বা পরিবর্তন স্পষ্টভাবে দেখাতে হবে।",
+          phy: "১. মূল যন্ত্রাংশ, রশ্মি বা অংশগুলির পরিষ্কার ও নির্ভুল বাংলা লেবেল (পাশে ইংরেজি টার্ম ব্র্যাকেটে থাকবে)।\n২. পরীক্ষার মান পরিবর্তন করে ফলাফল দেখার জন্য নিচে সহজ বাংলা বাটন ও স্লাইডার (যেমন: 'শুরু করুন', 'মান বাড়ান/কমান', 'রিসেট') থাকবে।\n৩. রঙিন কণা, তীরচিহ্ন বা সহজ অ্যানিমেশনের মাধ্যমে ভেতরের গতি, দিক বা পরিবর্তন স্পষ্টভাবে দেখাতে হবে।",
+          math: "১. জ্যামিতিক আকার, বাহু, কোণ বা পরিমিতির অংশগুলির পরিষ্কার ও নির্ভুল বাংলা লেবেল থাকবে।\n২. বাহুর দৈর্ঘ্য, ব্যাসার্ধ বা কোণের মান পরিবর্তন করে ক্ষেত্রফল, আয়তন বা উপপাদ্যের প্রমাণ লাইভ দেখার জন্য নিচে ইন্টারঅ্যাক্টিভ স্লাইডার ও বাটন (যেমন: 'মান পরিবর্তন করুন', 'ধাপে ধাপে প্রমাণ', 'রিসেট') থাকবে।\n৩. রঙিন জ্যামিতিক ডায়াগ্রাম ও তাৎক্ষণিক হিসাবের মাধ্যমে সূত্রটি কেন এবং কীভাবে কাজ করছে তা স্পষ্টভাবে দেখাতে হবে।",
+          geo: "১. ভৌগোলিক স্তর, স্থান বা উপাদানগুলির পরিষ্কার ও নির্ভুল বাংলা লেবেল (পাশে ইংরেজি টার্ম ব্র্যাকেটে থাকবে)।\n২. প্রাকৃতিক প্রক্রিয়াটি ধাপে ধাপে চালিয়ে বা থামিয়ে দেখার জন্য নিচে সহজ বাংলা বাটন (যেমন: 'শুরু করুন', 'পরবর্তী ধাপ', 'রিসেট') থাকবে।\n৩. রঙিন তীরচিহ্ন বা সহজ অ্যানিমেশনের মাধ্যমে বায়ুপ্রবাহ, জলচক্র বা প্রাকৃতিক পরিবর্তন স্পষ্টভাবে দেখাতে হবে।",
+          hist: "১. ঐতিহাসিক স্থান, চরিত্র ও গুরুত্বপূর্ণ সাল-তারিখের পরিষ্কার ও নির্ভুল বাংলা লেবেল থাকবে।\n২. ঘটনাটি সাল অনুযায়ী ধাপে ধাপে দেখার জন্য নিচে ইন্টারঅ্যাক্টিভ টাইমলাইন বাটন (যেমন: 'শুরু করুন', 'পরবর্তী ঘটনা', 'রিসেট') থাকবে।\n৩. সহজ ভিজ্যুয়াল মানচিত্র (Visual Map), তীরচিহ্ন বা চিত্রের মাধ্যমে ঘটনার গতিপথ, বিস্তার ও কারণ-ফলাফল স্পষ্টভাবে দেখাতে হবে।",
+          gram: "১. বাক্যের প্রতিটি অংশ (যেমন: Subject-Verb-Object বা কারক-বিভক্তি/পূর্বপদ-পরপদ) আলাদা রঙে হাইলাইট করা থাকবে।\n২. একটি উদাহরণ বাক্যকে বিভিন্ন রূপে বদলে দেখার জন্য নিচে ইন্টারঅ্যাক্টিভ বাটন (যেমন: 'রূপ পরিবর্তন করুন', 'পরবর্তী উদাহরণ', 'রিসেট') থাকবে।\n৩. রঙিন তীরচিহ্ন ও ভিজ্যুয়াল চার্টের মাধ্যমে দেখাতে হবে বাক্যের কোন শব্দটি কীভাবে বদলে যাচ্ছে এবং কেন বদলাচ্ছে।"
+        }[subject];
+
+        finalPrompt = `আমাকে ${levelDescBn}-এর ${subNamesBn[subject]} বিষয়ের '${topic}'-এর একটি সহজ, ইন্টারঅ্যাক্টিভ ভিজ্যুয়াল ডেমো (সিমুলেশন / চার্ট) বানিয়ে দাও। এটি একটি সম্পূর্ণ সিঙ্গেল-ফাইল HTML/CSS/SVG কোড হিসেবে তৈরি করো যাতে আমি ব্রাউজারে চালাতে পারি এবং পরে অফলাইনে সেভ করে রাখতে পারি।
+
+ডেমোটিতে নিচের বিষয়গুলি অবশ্যই থাকবে:
+${specificFeatureBn}
+৪. স্ক্রিনের একপাশে ২-৩ লাইনে সহজ বাংলায় লেখা থাকবে প্রতিটি ধাপে ঠিক কী ঘটছে এবং কেন ঘটছে।
+৫. ডেমোটির নিচে শিক্ষার্থীর বোঝা যাচাই করার জন্য ১টি ছোট 'চিন্তামূলক প্রশ্ন (What-if Question)' থাকবে।
+৬. ডিজাইনটি যেন মোবাইল ও কম্পিউটার—দুটো স্ক্রিনেই পরিষ্কার দেখা যায়।`;
+
+        guideNote.innerHTML = `<strong>মনে রাখবেন:</strong> ডেমোটি তৈরি হওয়ার পর অবশ্যই পাঠ্যবইয়ের ছবি, সূত্র, সাল-তারিখ বা ব্যাকরণের নিয়মের সাথে মিলিয়ে দেখবে। কোনো তথ্য বা উদাহরণ ভুল মনে হলে Gemini-কে লিখবে: <em>"বইয়ের নিয়ম অনুযায়ী [অংশের নাম]-এর তথ্য বা উদাহরণ ঠিক করে দাও।"</em>`;
+      } else {
+        const subNamesEn = {
+          life: "Life Science",
+          phy: "Physical Science",
+          math: "Mathematics",
+          geo: "Geography",
+          hist: "History",
+          gram: "Grammar"
+        };
+        const levelDescEn = {
+          "5-6": "Class 5–6 (Upper Primary level - simple visual analogies and basic concepts)",
+          "7-8": "Class 7–8 (Middle School level - clear mechanisms, rules, and examples)",
+          "9-10": "Class 9–10 (Secondary level - step-by-step academic breakdown)"
+        }[level];
+
+        const specificFeatureEn = {
+          life: "1. Clear, accurate English labels for all key organs and biological structures.\n2. Simple interactive control buttons at the bottom (such as 'Start / Play', 'Next Step', 'Reset') to observe the biological process stage-by-stage.\n3. Smooth visual movement using colored particles, arrows, or simple shapes to clearly show internal flow.",
+          phy: "1. Clear, accurate English labels for all key components, rays, or physical quantities.\n2. Simple interactive buttons and sliders at the bottom (such as 'Start', 'Adjust Value', 'Reset') so students can test how changing variables affects the result.\n3. Smooth visual movement using colored particles, arrows, or simple shapes to clearly show direction and force.",
+          math: "1. Clear, accurate English labels for geometric shapes, sides, angles, and dimensions.\n2. Interactive sliders and buttons at the bottom (such as 'Adjust Radius/Side', 'Step-by-Step Proof', 'Reset') so students can dynamically change values and see live changes in area, volume, or angles.\n3. Clean, color-coded SVG geometric diagrams paired with live formula calculations showing why the theorem or formula works.",
+          geo: "1. Clear, accurate English labels for all geographical layers, regions, or elements.\n2. Simple interactive control buttons at the bottom (such as 'Start / Play', 'Next Step', 'Reset') to observe the geographical process stage-by-stage.\n3. Smooth visual movement using colored arrows or simple animations to clearly show natural cycles or shifts.",
+          hist: "1. Clear, accurate English labels for key historical places, figures, and exact dates/years.\n2. Interactive timeline control buttons at the bottom (such as 'Start', 'Next Event', 'Reset') to explore the historical sequence chronologically.\n3. A simple visual map, directional arrows, or scene diagram showing the progression, routes, and cause-and-effect of the historical event.",
+          gram: "1. Color-coded visual highlighting for sentence parts (such as Subject, Verb, Object, or Clause components).\n2. Interactive transformation buttons at the bottom (such as 'Switch Tense / Voice', 'Next Example', 'Reset') so students can see live sentence transformations.\n3. Clear visual arrows and a rule chart showing which words move or change form and why."
+        }[subject];
+
+        finalPrompt = `Create a simple, interactive visual simulation / chart of '${topic}' in ${subNamesEn[subject]} tailored for ${levelDescEn} school students. Build it as a complete, self-contained single-file HTML/CSS/SVG code so that I can run it directly in any browser and save it for offline revision.
+
+The visual demo must include:
+${specificFeatureEn}
+4. A short 2–3 line explanation box on the screen describing what is happening and why at each stage in beginner-friendly English.
+5. One short 'What-if' critical thinking question below the demo to test the student's understanding.
+6. A 100% mobile-responsive layout that fits cleanly on both smartphone and laptop screens.`;
+
+        guideNote.innerHTML = `<strong>Remember:</strong> Always cross-check the generated demo with your school textbook diagrams, formulas, dates, and grammar rules. If any rule, date, or example looks incorrect, tell Gemini: <em>"According to my textbook, please fix the information/example of [Part Name]."</em>`;
+      }
+
+      document.getElementById("promptOutput").value = finalPrompt;
+      document.getElementById("outputSection").style.display = "block";
+    }
+
+    function copyPrompt() {
+      const output = document.getElementById("promptOutput");
+      const medium = document.getElementById("mediumSelect").value;
+      output.select();
+      output.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(output.value);
+      const btn = document.getElementById("copyBtn");
+      btn.innerText = medium === "bn" ? "কপি হয়ে গেছে! এবার Gemini-তে পেস্ট করুন" : "Copied! Now paste it into Google Gemini";
+      setTimeout(() => {
+        btn.innerText = medium === "bn" ? "প্রম্পট কপি করুন (Copy)" : "Copy Prompt";
+      }, 2500);
+    }
+
+    function resetForm() {
+      document.getElementById("topicInput").value = "";
+      document.getElementById("outputSection").style.display = "none";
+    }
+  </script>
+</body>
+</html>
