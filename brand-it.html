@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brand Your Visual Demo</title>
+  <link rel="icon" href="spm.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-gradient-start: #020617;
+      --bg-gradient-end: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.4);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #10b981;
+      --accent-danger: #f43f5e;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: fixed linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 60px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .sub-header {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-group {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      letter-spacing: 0.05em;
+      min-width: 110px;
+    }
+
+    .nav-btn {
+      background: rgba(34, 211, 238, 0.1);
+      color: var(--accent-primary);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .nav-btn:hover {
+      background: var(--accent-primary);
+      color: #020617;
+    }
+
+    .note-box {
+      background: rgba(34, 211, 238, 0.08);
+      border: 1px solid rgba(34, 211, 238, 0.35);
+      border-left: 4px solid var(--accent-primary);
+      border-radius: 16px;
+      padding: 22px 26px;
+      margin-bottom: 35px;
+      color: var(--text-primary);
+      font-size: 0.98rem;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .prompt-workflow {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    #promptsContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .step-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 35px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .step-label {
+      font-weight: 800;
+      font-size: 0.8rem;
+      background: var(--accent-primary);
+      color: #020617;
+      padding: 5px 16px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .clear-btn {
+      background: transparent;
+      border: 1px solid var(--accent-danger);
+      color: var(--accent-danger);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+
+    .clear-btn:hover {
+      background: var(--accent-danger);
+      color: white;
+    }
+
+    label {
+      display: block;
+      color: var(--accent-primary);
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      letter-spacing: 0.03em;
+    }
+
+    .single-input {
+      width: 100%;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      padding: 14px 16px;
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .single-input:focus {
+      border-color: var(--accent-primary);
+    }
+
+    .prompt-content {
+      background: var(--code-bg);
+      padding: 25px;
+      border-radius: 12px;
+      font-family: 'Source Code Pro', monospace;
+      font-size: 0.92rem;
+      color: #cbd5e1;
+      white-space: pre-wrap;
+      border: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 22px;
+      line-height: 1.6;
+      word-break: break-word;
+      max-height: 520px;
+      overflow-y: auto;
+    }
+
+    .prompt-content::-webkit-scrollbar { width: 8px; }
+    .prompt-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+    .prompt-content::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 4px; }
+
+    .btn {
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s;
+      width: 100%;
+      text-decoration: none;
+      border: none;
+    }
+
+    .copy-btn {
+      background: rgba(34, 211, 238, 0.1);
+      color: var(--accent-primary);
+      border: 1px solid var(--accent-primary);
+    }
+
+    .copy-btn:hover {
+      background: var(--accent-primary);
+      color: #020617;
+    }
+
+    .copy-btn.copied {
+      background: var(--accent-success);
+      border-color: var(--accent-success);
+      color: white;
+    }
+
+    .footer {
+      margin-top: 80px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--card-border);
+      padding-top: 40px;
+      width: 100%;
+      padding-bottom: 40px;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 2rem; }
+      .sub-header { font-size: 1rem; }
+      .step-card { padding: 22px; }
+      .prompt-content { font-size: 0.85rem; }
+      .nav-title { min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Brand Your Visual Demo</h1>
+      <p class="sub-header">Reusable Footer, Floating WhatsApp Button &amp; Favicon Snippets</p>
+    </header>
+
+    <!-- Dual Navigation -->
+    <nav class="nav-wrapper" aria-label="Page Navigation">
+      <div class="nav-group">
+        <span class="nav-title">Input Fields:</span>
+        <a href="#input-notes-card" class="nav-btn">Notes Input</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-title">Prompts:</span>
+        <a href="#prompt-card-1" class="nav-btn">Footer &amp; WhatsApp CSS</a>
+        <a href="#prompt-card-2" class="nav-btn">Footer &amp; WhatsApp HTML</a>
+        <a href="#prompt-card-3" class="nav-btn">Favicon Link Tag</a>
+      </div>
+    </nav>
+
+    <!-- Advisory Note Box -->
+    <div class="note-box">ব্যবহারের পরামর্শ:
+ধাপ ১: পেজের &lt;head&gt; ট্যাগের ভেতরে &lt;style&gt; অংশে এই CSS কোডটি যোগ করুন
+(এটি থাকলে পেজে Tailwind CSS না থাকলেও বাটন ও ফুটার ঠিকমতো কাজ করবে)
+ধাপ ২: পেজের একদম নিচে &lt;/body&gt; ট্যাগের ঠিক আগে এই HTML কোডটি পেস্ট করুন</div>
+
+    <div class="prompt-workflow">
+      
+      <!-- Single-line Input Card (No multiline dynamic input fields) -->
+      <div class="step-card" id="input-notes-card">
+        <div class="step-header">
+          <span class="step-label">Notes Input</span>
+          <button class="clear-btn" onclick="resetInput('inputNotes')">Reset</button>
+        </div>
+        <label for="inputNotes">Project / Demo Reference Note (Optional)</label>
+        <input type="text" id="inputNotes" class="single-input" placeholder="Enter a quick demo reference note..." oninput="refreshPrompts()">
+      </div>
+
+      <!-- Prompt Result Cards -->
+      <div id="promptsContainer">
+        <!-- Prompts injected by JavaScript -->
+      </div>
+
+    </div>
+
+    <footer class="footer">
+      <p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    const templates = [
+      {
+        id: 1,
+        name: "Footer & WhatsApp CSS",
+        text: `<style>
+  /* Reusable Copyright Footer */
+  .spm-footer {
+    text-align: center;
+    padding: 16px 20px;
+    background: #090d16;
+    border-top: 1px solid rgba(148, 163, 184, 0.25);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #94a3b8;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  /* Reusable Floating WhatsApp Button */
+  .floating-whatsapp {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 950;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(180deg, #28e06d 0%, #25d366 55%, #1ebe5d 100%);
+    color: #052e16;
+    text-decoration: none;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 800;
+    font-size: 0.95rem;
+    padding: 12px 20px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 0 12px 28px rgba(7, 21, 43, 0.28), 0 0 0 4px rgba(37, 211, 102, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .floating-whatsapp:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 34px rgba(7, 21, 43, 0.34), 0 0 0 6px rgba(37, 211, 102, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  .floating-whatsapp svg {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 520px) {
+    .floating-whatsapp {
+      right: 16px;
+      bottom: 16px;
+      padding: 11px 16px;
+      font-size: 0.88rem;
+    }
+  }
+</style>`
+      },
+      {
+        id: 2,
+        name: "Footer & WhatsApp HTML",
+        text: `<!-- Reusable Copyright Footer -->
+  <footer class="spm-footer">
+    Copyright &copy; <script>document.write(new Date().getFullYear())<\/script> Siva Prasad Mukherjee. All Rights Reserved.
+  </footer>
+
+  <!-- Reusable Floating WhatsApp Support Button -->
+  <a
+    href="https://wa.me/919339126139?text=%E0%A6%A8%E0%A6%AE%E0%A6%B8%E0%A7%8D%E0%A6%95%E0%A6%BE%E0%A6%B0!%20%E0%A6%8F%E0%A6%87%20%E0%A6%87%E0%A6%A8%E0%A7%8D%E0%A6%9F%E0%A6%BE%E0%A6%B0%E0%A6%85%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%95%E0%A7%8D%E0%A6%9F%E0%A6%BF%E0%A6%AD%20%E0%A6%B8%E0%A6%BF%E0%A6%AE%E0%A7%81%E0%A6%B2%E0%A7%87%E0%A6%B6%E0%A6%A8%20%E0%A6%AC%E0%A7%8D%E0%A6%AF%E0%A6%AC%E0%A6%B9%E0%A6%BE%E0%A6%B0%20%E0%A6%95%E0%A6%B0%E0%A6%BE%E0%A6%B0%20%E0%A6%AC%E0%A6%BF%E0%A6%B7%E0%A6%AF%E0%A6%BC%E0%A7%87%20%E0%A6%86%E0%A6%AE%E0%A6%BE%E0%A6%B0%20%E0%A6%8F%E0%A6%95%E0%A6%9F%E0%A7%81%20%E0%A6%B8%E0%A6%BE%E0%A6%B9%E0%A6%BE%E0%A6%AF%E0%A7%8D%E0%A6%AF%20%E0%A6%A6%E0%A6%B0%E0%A6%95%E0%A6%BE%E0%A6%B0%E0%A5%A4"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="floating-whatsapp"
+    aria-label="সাহায্যের জন্য WhatsApp-এ সরাসরি মেসেজ করুন"
+  >
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12.031 2c-5.516 0-9.969 4.453-9.969 9.969 0 1.758.459 3.473 1.331 4.986L2 22l5.182-1.359a9.927 9.927 0 0 0 4.849 1.258h.004c5.515 0 9.968-4.453 9.968-9.969A9.91 9.91 0 0 0 19.08 4.92 9.908 9.908 0 0 0 12.031 2zm5.822 14.274c-.246.692-1.431 1.324-1.979 1.406-.508.076-1.15.108-1.856-.116-.428-.136-.978-.318-1.682-.622-2.961-1.278-4.894-4.26-5.042-4.458-.147-.197-1.203-1.601-1.203-3.054 0-1.453.762-2.167 1.032-2.463.271-.296.591-.37.788-.37.197 0 .394.002.566.01.182.009.426-.069.666.508.246.591.837 2.044.911 2.192.074.148.123.32.025.517-.099.197-.148.32-.296.493-.148.172-.311.385-.444.517-.148.148-.302.308-.13.604.172.296.766 1.264 1.644 2.047 1.13 1.007 2.082 1.319 2.378 1.467.296.148.468.123.64-.074.172-.197.739-.862.936-1.158.197-.296.394-.246.665-.148.271.099 1.724.813 2.02.961.296.148.493.222.566.345.074.123.074.714-.172 1.406z"/>
+    </svg>
+    <span>সাহায্য দরকার? WhatsApp করুন</span>
+  </a>`
+      },
+      {
+        id: 3,
+        name: "Favicon Link Tag",
+        text: `<link rel="icon" href="spm.ico">`
+      }
+    ];
+
+    function createCards() {
+      const container = document.getElementById('promptsContainer');
+      container.innerHTML = '';
+      templates.forEach(t => {
+        const card = document.createElement('div');
+        card.className = 'step-card';
+        card.id = `prompt-card-${t.id}`;
+        card.innerHTML = `
+          <div class="step-header">
+            <span class="step-label">Prompt #${t.id} &mdash; ${t.name}</span>
+          </div>
+          <div class="prompt-content" id="p${t.id}"></div>
+          <button class="btn copy-btn" onclick="copyText('p${t.id}', this)">
+            <span>Copy ${t.name}</span>
+          </button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function refreshPrompts() {
+      templates.forEach(t => {
+        const el = document.getElementById(`p${t.id}`);
+        if (el) {
+          el.textContent = t.text;
+        }
+      });
+    }
+
+    function resetInput(fieldId) {
+      const field = document.getElementById(fieldId);
+      if (field) {
+        field.value = "";
+      }
+      refreshPrompts();
+    }
+
+    function copyText(id, btn) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = `<span>Copied to Clipboard!</span>`;
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    window.onload = () => {
+      createCards();
+      refreshPrompts();
+    };
+  </script>
+</body>
+</html>
